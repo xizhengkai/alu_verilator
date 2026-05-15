@@ -1,0 +1,22 @@
+# Verilator build output
+obj_dir/
+
+# Simulation waveforms
+*.vcd
+*.fst
+
+# Build artifacts
+*.o
+*.d
+*.a
+*.so
+*.exe
+
+# IDE
+*.code-workspace
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
