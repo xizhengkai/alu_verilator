@@ -4,20 +4,12 @@
 #include <verilated_vcd_c.h>
 #include "Valu.h"
 
-#define MAX_SIM_TIME 100  // 仿真总时间
+#define MAX_SIM_TIME 200  // 仿真总时间
 vluint64_t sim_time = 0;
 
 int main(int argc, char** argv, char** env) {
-    Verilated::commandArgs(argc, argv);
-
     // 创建 DUT
     Valu *dut = new Valu;
-
-    // 开启波形追踪
-    Verilated::traceEverOn(true);
-    VerilatedVcdC *m_trace = new VerilatedVcdC;
-    dut->trace(m_trace, 5);       // trace 5 层 hierarchy
-    m_trace->open("waveform.vcd");
 
     // 初始化信号
     dut->clk = 0;
@@ -29,8 +21,8 @@ int main(int argc, char** argv, char** env) {
 
     // 先复位几个周期
     for (int i = 0; i < 4; i++) {
-        dut->clk = 0; dut->eval(); m_trace->dump(sim_time++); 
-        dut->clk = 1; dut->eval(); m_trace->dump(sim_time++); 
+        dut->clk = 0; dut->eval(); 
+        dut->clk = 1; dut->eval();
     }
     dut->rst = 0;  // 释放复位
 
@@ -47,7 +39,6 @@ int main(int argc, char** argv, char** env) {
         // 翻转时钟
         dut->clk ^= 1;
         dut->eval();
-        m_trace->dump(sim_time++);
 
         // 打印上升沿结果
         if (dut->clk == 1 && dut->out_valid) {
@@ -60,8 +51,6 @@ int main(int argc, char** argv, char** env) {
         }
     }
 
-    // 关闭波形并释放资源
-    m_trace->close();
+    // 释放资源
     delete dut;
-    exit(EXIT_SUCCESS);
 }
